@@ -26,5 +26,9 @@ Submissions for the [Blackwell NVFP4 Kernel Hackathon](https://luma.com/9n27uem4
 
 ```bash
 pip install torch
-# Kernels use PyTorch inline CUDA extensions — no separate build step needed.
+
+# For CuteDSL kernels (nvfp4_dual_gemm v2/v3/v4):
+pip install cutlass
+
+# All kernels require CUDA toolkit (nvcc) installed separately.
 ```

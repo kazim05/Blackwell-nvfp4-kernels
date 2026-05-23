@@ -25,7 +25,7 @@ All in a single fused kernel to avoid reloading A from global memory twice.
 - **Warp specialization**: TMA producer warp + MMA consumer warp + epilogue warps (6 warps total, 192 threads)
 - **Activation stationary**: A tile stays in SMEM across both B1 and B2 MMAs to halve A bandwidth
 - **Scale factors**: Reordered to match TCGen05 consumption pattern; 1D TMA loads to SMEM then `tcgen05.cp` to TMEM
-- **Epilogue**: `sigmoid` gating fused into epilogue; uses `16x256b` or `32x32b` tcgen05 load depending on `BLOCK_N`
+- **Epilogue**: `silu` gating fused into epilogue; uses `16x256b` or `32x32b` tcgen05 load depending on `BLOCK_N`
 
 ---
 
@@ -50,7 +50,6 @@ Unit: microseconds (lower is better). Best submission: `submission_v4.py` with g
 | `task.py` | Task harness — correctness check and timing loop |
 | `task.yml` | Task metadata (problem sizes, benchmarks) |
 | `reference.py` | Naive PyTorch reference implementation |
-| `submission_ref.py` | Compiled reference baseline (no hand-written PTX) |
 | `submission_v1.py` | Hand-written PTX kernel via `load_inline` |
 | `submission_v2.py` | CuteDSL kernel (initial, 128 threads/CTA) |
 | `submission_v3.py` | CuteDSL + warp specialization |

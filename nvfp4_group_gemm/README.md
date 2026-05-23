@@ -12,7 +12,7 @@ All matrices are block-scaled NVFP4 (`float4_e2m1fn`) with `float8_e4m3fn` scale
 
 ## Submission History
 
-- `submission_v1.py`: Baseline grouped GEMM (`kernel_group_gemm`). 2-stage TMA→MMA pipeline. One CTA per output tile — grid launched in the Z dimension across all groups. 6 warps (192 threads): 4 epilogue + 1 TMA producer + 1 MMA consumer.
+- `submission_v1.py`: Baseline grouped GEMM (`kernel_group_gemm`). 2-stage TMA→MMA pipeline. One CTA per output tile — flat 1D grid over all tiles across all groups, with a `cta_to_group` lookup array mapping each CTA to its group and tile coordinates. 6 warps (192 threads): 4 epilogue + 1 TMA producer + 1 MMA consumer.
 
 - `submission_v2.py`: Per-group kernel launch strategy (`kernel_single_gemm`). Same 2-stage kernel but called separately for each group to avoid divergence from variable problem sizes. Simpler CTA mapping at the cost of multiple launch overheads.
 
@@ -30,7 +30,7 @@ All matrices are block-scaled NVFP4 (`float4_e2m1fn`) with `float8_e4m3fn` scale
   5. **Vectorized epilogue stores** — wider FP16 stores to global memory
   6. Grid tightened to `min(total_tiles, num_sms)` for exact SM occupancy
 
-- `submission_v7.py`: All v6 features + **NUM_STAGES tuned from 4→3** for a better SMEM vs latency-hiding balance. Adds `LaunchParams` struct for clean host-side parameter packaging (`h_A_tmaps`, `h_B_tmaps`, `h_problems` pre-bundled). Sets `MAX_GROUPS=16`. **Best leaderboard result: 25.407 µs geomean.**
+- `submission_v7.py`: All v6 features + **NUM_STAGES tuned from 4→3** for a better SMEM vs latency-hiding balance. Refactors host-side parameters into a `LaunchParams` struct (`h_A_tmaps`, `h_B_tmaps`, `h_problems` pre-bundled) and copies it to device with a single `cudaMemcpyAsync`. **Best leaderboard result: 25.407 µs geomean.**
 
 ---
 
