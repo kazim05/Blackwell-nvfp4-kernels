@@ -41,7 +41,7 @@ All matrices are block-scaled NVFP4 (`float4_e2m1fn`) with `float8_e4m3fn` scale
 - **Adaptive cache eviction**: `EVICT_FIRST` for the smaller dimension, `EVICT_LAST` for the larger — reduces L2 pollution from non-reused data
 - **SMEM-cached group metadata**: `ProblemInfo` array loaded into shared memory to avoid per-tile global reads
 - **Ping-pong TMEM**: epilogue reads from one TMEM buffer while MMA writes to the other, hiding epilogue latency
-- **3-stage pipeline**: Sweet spot between SMEM budget (~228KB) and latency hiding on B200
+- **3-stage pipeline**: 4 stages (~144KB SMEM) left only ~84KB for L1 cache; 3 stages (~108KB) reduces L1 pressure, which outweighs the benefit of one extra prefetch stage for grouped workloads
 
 ---
 
@@ -83,6 +83,6 @@ Unit: microseconds (lower is better). Best submission: `submission_v7.py` with g
 ## Notes
 
 - Persistent kernel avoids re-launching for each group but requires careful phase/barrier management across tile transitions
-- SMEM budget on B200 is ~228KB; going from 4→3 stages freed enough SMEM to allow higher occupancy
+- 4 stages used ~144KB of SMEM leaving only ~84KB for L1 cache; tuning to 3 stages (~108KB) reduced L1 pressure, which matters more for grouped GEMM than an extra prefetch stage
 - Binary search for group lookup is critical for large group counts — linear scan dominates for G > 8
 - `LaunchParams` struct reduces kernel argument size and avoids repeated host-side setup per call
