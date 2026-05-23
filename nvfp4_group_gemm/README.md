@@ -47,7 +47,7 @@ All matrices are block-scaled NVFP4 (`float4_e2m1fn`) with `float8_e4m3fn` scale
 
 ## Leaderboard Results
 
-Unit: microseconds (lower is better). Best submission: `submission_v7.py` with geomean **25.407 µs**.
+Unit: microseconds. Best submission: `submission_v7.py` with geomean **25.407 µs**.
 
 | Version | Geomean (µs) | Notes |
 |---------|-------------|-------|
@@ -58,7 +58,7 @@ Unit: microseconds (lower is better). Best submission: `submission_v7.py` with g
 | v4      | —           | + 4-stage pipeline |
 | v5      | —           | + adaptive cache eviction |
 | v6      | —           | + TMEM overlap + SMEM cache |
-| v7      | **25.407**  | + 3-stage tuning + LaunchParams — best |
+| v7      | **25.407**  | + 3-stage tuning + LaunchParams |
 
 ---
 
