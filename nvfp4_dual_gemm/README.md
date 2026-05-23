@@ -39,7 +39,7 @@ Unit: microseconds. Best submission: `submission_v4.py` with geomean **20.692 µ
 | v1      | —           | PTX baseline |
 | v2      | —           | CuteDSL initial |
 | v3      | —           | + warp specialization |
-| v4      | **20.692**  | + (2,2) TMA multicast cluster — best |
+| v4      | **20.692**  | + (2,2) TMA multicast cluster |
 
 ---
 
