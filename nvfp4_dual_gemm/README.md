@@ -31,7 +31,7 @@ All in a single fused kernel to avoid reloading A from global memory twice.
 
 ## Leaderboard Results
 
-Unit: microseconds (lower is better). Best submission: `submission_v4.py` with geomean **20.692 µs**.
+Unit: microseconds. Best submission: `submission_v4.py` with geomean **20.692 µs**.
 
 | Version | Geomean (µs) | Notes |
 |---------|-------------|-------|
