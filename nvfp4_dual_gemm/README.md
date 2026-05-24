@@ -16,7 +16,7 @@ All in a single fused kernel to avoid reloading A from global memory twice.
 - `submission_v3.py`: CuteDSL + warp specialization (ported pattern from `nvfp4_gemm`). Separates TMA producer and MMA consumer warps for better pipelining.
 - `submission_v4.py`: CuteDSL + warp specialization + enhanced TMA multicasting with `(2,2)` cluster shape for 4x reduction in memory traffic.
 
-**Best result**: `submission_v4.py` — geomean **20.692 µs** across the four benchmark shapes.
+**Best result**: `submission_v4.py` — runtime **20.692 µs** (**1,547 TFLOPS**) across the four benchmark shapes.
 
 ---
 
@@ -31,15 +31,17 @@ All in a single fused kernel to avoid reloading A from global memory twice.
 
 ## Leaderboard Results
 
-Unit: microseconds. Best submission: `submission_v4.py` with geomean **20.692 µs**.
+Unit: microseconds (lower is better). Best submission: `submission_v4.py` with runtime **20.692 µs** (**1,547 TFLOPS**).
 
-| Version | Geomean (µs) | Notes |
-|---------|-------------|-------|
-| SOL     | 4.886       | Speed-of-light (B200 peak) |
-| v1      | —           | PTX baseline |
-| v2      | —           | CuteDSL initial |
-| v3      | —           | + warp specialization |
-| v4      | **20.692**  | + (2,2) TMA multicast cluster |
+| Version | Runtime (µs) | TFLOPS    | Notes |
+|---------|-------------|-----------|-------|
+| SOL     | 4.886       | 6,553     | Speed-of-light (B200 peak) |
+| v1      | —           | —         | PTX baseline |
+| v2      | —           | —         | CuteDSL initial |
+| v3      | —           | —         | + warp specialization |
+| v4      | **20.692**  | **1,547** | + (2,2) TMA multicast cluster — best |
+
+> TFLOPS = geomean(4·M·N·K) / runtime; factor of 4 counts both GEMMs (A·B1ᵀ and A·B2ᵀ). SOL exceeds B200 peak compute (5,797 TFLOPS) because these small-M shapes are memory-bandwidth bound.
 
 ---
 

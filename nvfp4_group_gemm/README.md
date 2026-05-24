@@ -30,7 +30,7 @@ All matrices are block-scaled NVFP4 (`float4_e2m1fn`) with `float8_e4m3fn` scale
   5. **Vectorized epilogue stores** — wider FP16 stores to global memory
   6. Grid tightened to `min(total_tiles, num_sms)` for exact SM occupancy
 
-- `submission_v7.py`: All v6 features + **NUM_STAGES tuned from 4→3** for a better SMEM vs latency-hiding balance. Refactors host-side parameters into a `LaunchParams` struct (`h_A_tmaps`, `h_B_tmaps`, `h_problems` pre-bundled) and copies it to device with a single `cudaMemcpyAsync`. **Best leaderboard result: 25.407 µs geomean.**
+- `submission_v7.py`: All v6 features + **NUM_STAGES tuned from 4→3** for a better SMEM vs latency-hiding balance. Refactors host-side parameters into a `LaunchParams` struct (`h_A_tmaps`, `h_B_tmaps`, `h_problems` pre-bundled) and copies it to device with a single `cudaMemcpyAsync`. **Best leaderboard result: runtime 25.407 µs (775 TFLOPS).**
 
 ---
 
@@ -47,18 +47,20 @@ All matrices are block-scaled NVFP4 (`float4_e2m1fn`) with `float8_e4m3fn` scale
 
 ## Leaderboard Results
 
-Unit: microseconds. Best submission: `submission_v7.py` with geomean **25.407 µs**.
+Unit: microseconds (lower is better). Best submission: `submission_v7.py` with runtime **25.407 µs** (**775 TFLOPS**).
 
-| Version | Geomean (µs) | Notes |
-|---------|-------------|-------|
-| SOL     | —           | Speed-of-light (B200 peak) |
-| v1      | —           | Z-dim grid baseline |
-| v2      | —           | Per-group launch |
-| v3      | —           | Persistent kernel |
-| v4      | —           | + 4-stage pipeline |
-| v5      | —           | + adaptive cache eviction |
-| v6      | —           | + TMEM overlap + SMEM cache |
-| v7      | **25.407**  | + 3-stage tuning + LaunchParams |
+| Version | Runtime (µs) | TFLOPS  | Notes |
+|---------|-------------|---------|-------|
+| SOL     | 5.211       | 3,777   | Speed-of-light (B200 peak) |
+| v1      | —           | —       | Z-dim grid baseline |
+| v2      | —           | —       | Per-group launch |
+| v3      | —           | —       | Persistent kernel |
+| v4      | —           | —       | + 4-stage pipeline |
+| v5      | —           | —       | + adaptive cache eviction |
+| v6      | —           | —       | + TMEM overlap + SMEM cache |
+| v7      | **25.407**  | **775** | + 3-stage tuning + LaunchParams — best |
+
+> TFLOPS = geomean(2·Σ Mₘ·Nₘ·Kₘ) / runtime; sums FLOPS across all G groups per benchmark. SOL runtime computed from per-shape times in task.yml (18.833, 10.667, 2.406, 1.525 µs).
 
 ---
 
